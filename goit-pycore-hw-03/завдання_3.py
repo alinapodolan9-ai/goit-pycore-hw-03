@@ -1,25 +1,27 @@
 import re
 
 def normalize_phone(phone_number):
-    
+
     phone_number = phone_number.strip()
 
-    phone_number = re.sub(r"[^\d+]", "", phone_number)
+    has_plus = phone_number.startswith("+")
 
-    if phone_number.startswith("+"):
-        return phone_number
+    phone_number = re.sub(r"\D", "", phone_number)
 
+    if has_plus:
+        return "+" + phone_number
+
+    # Якщо починається з коду України
     if phone_number.startswith("380"):
         return "+" + phone_number
 
-    # В інших випадках добавляємо код України
+    # Якщо починається з 0
     return "+38" + phone_number
 
 
-# Варіанти
 raw_numbers = [
-   "067\\t123 4567",
-    "(095) 234-5678\\n",
+    "067\t123 4567",
+    "(095) 234-5678\n",
     "+380 44 123 4567",
     "380501234567",
     "    +38(050)123-32-34",
@@ -31,5 +33,4 @@ raw_numbers = [
 
 sanitized_numbers = [normalize_phone(num) for num in raw_numbers]
 
-print("Нормальні номери:")
 print(sanitized_numbers)
